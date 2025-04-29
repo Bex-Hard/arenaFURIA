@@ -24,18 +24,23 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var token = this.recoverToken(request);
-        if (token != null && !token.isEmpty()) {
-            var username = tokenService.extractUsername(token);
-            if (tokenService.validateToken(token, username)) {
-                Optional<UserDetails> user = userRepository.findByEmail(username);
-                if (user.isPresent()) {
-                    var authentication = new UsernamePasswordAuthenticationToken(user.get(), username, user.get().getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            var token = this.recoverToken(request);
+            if (token != null && !token.isEmpty()) {
+                var username = tokenService.extractUsername(token);
+                if (tokenService.validateToken(token, username)) {
+                    Optional<UserDetails> user = userRepository.findByEmail(username);
+                    if (user.isPresent()) {
+                        var authentication = new UsernamePasswordAuthenticationToken(user.get(), null, user.get().getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
             }
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write("Token inválido ou expirado");
         }
-        filterChain.doFilter(request, response);
     }
     private String recoverToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");

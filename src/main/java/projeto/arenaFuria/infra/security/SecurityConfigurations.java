@@ -34,6 +34,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/user").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/user/update-password").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/room/create").hasRole("ADMIN")
+                        .requestMatchers("/api/room/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

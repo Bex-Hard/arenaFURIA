@@ -1,5 +1,6 @@
 package projeto.arenaFuria.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +28,9 @@ public class UserService{
 
     public UserDetails getUserByEmail(String email){
         return userRepository.findByEmail(email).orElseThrow( () -> new UsernameNotFoundException("User not found"));
+    }
+    public UserDetails getUserById(String id){
+        return userRepository.findUserById(id);
     }
     public UpdateUserResponseDTO updatePassword (String email, String oldPassword, String newPassword){
         var authToken = new UsernamePasswordAuthenticationToken(email, oldPassword);
@@ -62,5 +66,18 @@ public class UserService{
         } catch (AuthenticationException e) {
             throw new RuntimeException("Email ou senha inválidos. Usuário não foi deletado.");
         }
+    }
+
+    public String getRequestUserId(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Token JWT não encontrado ou malformado.");
+        }
+
+        String token = authHeader.substring(7); // remove "Bearer "
+        String username = tokenService.extractUsername(token);
+
+        User user = (User) getUserByEmail(username);
+        return user.getId();
     }
 }

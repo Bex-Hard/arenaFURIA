@@ -50,10 +50,11 @@ public class TokenService {
     /**
      * Gera um token JWT para um usuário.
      */
-    public String generateToken(String username) {
+    public String generateToken(String email, String username) {
         try{
             return Jwts.builder()
-                    .setSubject(username)
+                    .setSubject(email)
+                    .claim("username", username)
                     .setIssuedAt(new Date())
                     .setExpiration(generateExpirationDate())
                     .signWith(getSigningKey(), SignatureAlgorithm.HS256)

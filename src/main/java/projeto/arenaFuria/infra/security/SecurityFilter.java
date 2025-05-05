@@ -42,9 +42,14 @@ public class SecurityFilter extends OncePerRequestFilter {
             response.getWriter().write("Token inválido ou expirado");
         }
     }
+
     private String recoverToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
-        return authHeader.replace("Bearer ", "");
+        if (authHeader == null) return null;
+        if (authHeader.startsWith("Bearer ")) {
+            return authHeader.replace("Bearer ", "");
+        }
+        // Se não tiver o prefixo Bearer, assume que é o token puro
+        return authHeader;
     }
 }

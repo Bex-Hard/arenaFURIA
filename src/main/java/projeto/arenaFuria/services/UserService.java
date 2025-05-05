@@ -42,11 +42,10 @@ public class UserService{
             throw new RuntimeException("Senha antiga inválida.");
         }
     }
-    public UpdateUserResponseDTO deleteUser (String email, String password, String token) throws AccessDeniedException {
+    public UpdateUserResponseDTO deleteUser (String email, String password, String authenticatedUserEmail) throws AccessDeniedException {
         var existUser = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found."));
-        String senderUserName = tokenService.extractUsername(token);
 
-        if (!senderUserName.equalsIgnoreCase(existUser.getUsername())) {
+        if (!authenticatedUserEmail.equalsIgnoreCase(existUser.getUsername())) {
             throw new AccessDeniedException("Você só pode deletar sua própria conta.");
         }
 

@@ -3,6 +3,9 @@
 Este é o backend do projeto desenvolvido por Rebecca Hardman para o processo seletivo da furia. 
 Consiste em uma API que cadastra usuários comuns (users) e administradores (admins) de forma segura (usando spring security e tokens JWT), além de oferecer suporte para a troca de mensagens (através do spring websocket).
 
+## Branch de desenvolvimento
+  /Developer
+
 ## 🚀 Tecnologias Utilizadas
 
 - Java 22

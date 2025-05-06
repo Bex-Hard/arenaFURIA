@@ -1,10 +1,11 @@
 # Arena Fúria
 
-Este é um projeto desenvolvido para o processo seletivo da Fúria, implementando uma API REST para gerenciamento de jogadores e partidas.
+Este é o backend do projeto desenvolvido por Rebecca Hardman para o processo seletivo da furia. 
+Consiste em uma API que cadastra usuários comuns (users) e administradores (admins) de forma segura (usando spring security e tokens JWT), além de oferecer suporte para a troca de mensagens (através do spring websocket).
 
 ## 🚀 Tecnologias Utilizadas
 
-- Java 17
+- Java 22
 - Spring Boot 3.2.3
 - Spring Data JPA
 - PostgreSQL
@@ -16,7 +17,6 @@ Este é um projeto desenvolvido para o processo seletivo da Fúria, implementand
 - Java 17 ou superior
 - Maven
 - PostgreSQL
-- Docker (opcional)
 
 ## 🔧 Instalação
 
@@ -32,9 +32,28 @@ cd arena-furia
 
 3. Execute o projeto:
 ```bash
-mvn spring-boot:run
+  mvn spring-boot:run
 ```
+4. Como alternativa, é possível utilizar o H2 para ambiente de testes
+   - Em `application properties`, adicione:
+   ``` bash
+      # H2 Database Configuration
+      spring.datasource.url=jdbc:h2:mem:testdb
+      spring.datasource.driver-class-name=org.h2.Driver
+      spring.datasource.username=sa
+      spring.datasource.password=password
+      spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+      
+      # H2 Console
+      spring.h2.console.enabled=true
+      spring.h2.console.path=/h2-console
 
+      # JPA/Hibernate
+      spring.jpa.hibernate.ddl-auto=update
+      spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      
+      api.security.token.secret=${JWT_SECRET:chave-extra-debaixo-do-tapete}
+```
 ## 📚 Documentação da API
 
 A documentação completa da API está disponível através do Swagger UI. Após iniciar a aplicação, acesse:
@@ -43,18 +62,11 @@ A documentação completa da API está disponível através do Swagger UI. Após
 http://localhost:8080/swagger-ui.html
 ```
 
-A documentação Swagger fornece:
-- Lista completa de todos os endpoints disponíveis
-- Detalhes dos parâmetros de entrada e saída
-- Exemplos de requisições e respostas
-- Interface interativa para testar os endpoints
-
-## 🎮 Funcionalidades
-
-- Gerenciamento de jogadores
-- Registro de partidas
-- Sistema de pontuação
-- Histórico de jogos
+      A documentação Swagger fornece:
+      - Lista completa de todos os endpoints disponíveis
+      - Detalhes dos parâmetros de entrada e saída
+      - Exemplos de requisições e respostas
+      - Interface interativa para testar os endpoints
 
 ## 🛠️ Estrutura do Projeto
 
@@ -64,21 +76,19 @@ src/
 │   ├── java/
 │   │   └── com/
 │   │       └── arenafuria/
+│   │           ├── config/
 │   │           ├── controllers/
+│   │           ├── dto/
+│   │           ├── entity/
+│   │           ├── infra/
+│   │           ├── mapper/
 │   │           ├── models/
-│   │           ├── repositories/
+│   │           ├── repository/
 │   │           └── services/
 │   └── resources/
 │       └── application.properties
 └── test/
 ```
-
-## 📝 Endpoints Principais
-
-- `GET /api/jogadores` - Lista todos os jogadores
-- `POST /api/jogadores` - Cria um novo jogador
-- `GET /api/partidas` - Lista todas as partidas
-- `POST /api/partidas` - Registra uma nova partida
 
 ## 🤝 Contribuição
 
